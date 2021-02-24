@@ -150,6 +150,7 @@ int find_token_digits(int token)
   else return 2;
 }
 
+// inserts symbol into token list
 void insertSymbolToken(char *token_list, int token, int *token_position)
 {
   int token_digits = find_token_digits(token);
@@ -181,7 +182,7 @@ void insertSymbolToken(char *token_list, int token, int *token_position)
 
 }
 
-// places token in list
+// places identfier and reserved words into token list
 void place_word_token_in_list(char *token_list, int token, int *token_position, char *temp_buffer)
 {
   int token_digits = find_token_digits(token);
@@ -228,6 +229,7 @@ void place_word_token_in_list(char *token_list, int token, int *token_position, 
   return;
 }
 
+// places number into token list
 void place_number_token_in_list(char *token_list, int *token_position, char * buffer)
 {
   char token = '3';
@@ -286,15 +288,18 @@ int main(int argc, char **argv)
      {
        category = 1;
      }
+     // if first character of unit is a digit
      else if (isdigit(buffer[pos]))
      {
        category = 2;
      }
+     // if character is a cntrl character or white space keep reading
      else if (iscntrl(buffer[pos]) != 0 || isspace(buffer[pos]) != 0)
      {
        pos++;
        continue;
      }
+     // character is non of the above
      else
      {
         category = 3;
@@ -362,6 +367,7 @@ int main(int argc, char **argv)
          break;
        }
 
+       // first character of unit is number
        case 2 :
        {
          char temp_buffer [6];
@@ -415,11 +421,13 @@ int main(int argc, char **argv)
           break;
        }
 
+       // first character of unit is symbol
        case 3 :
        {
          char temp_buffer [3];
          int issue_detected = 0;
          int comment_detected = 0;
+
 
          if (buffer[pos] == '<')
          {
@@ -497,6 +505,7 @@ int main(int argc, char **argv)
               issue_detected = 1;
         }
 
+        // tokenize symbol if valid and is not a comment
         if (!issue_detected && !comment_detected )
         {
             int token = findSymbolToken(temp_buffer,symbols);
@@ -514,6 +523,7 @@ int main(int argc, char **argv)
     }
   }
 
+  // prints out token list
   printf("\nToken List:\n");
   token_list[token_position[0]-1] = '\0';
   printf("%s\n", token_list);
